@@ -14,6 +14,58 @@ export class ValNode {
     this.value = value;
     this.key = key;
   }
+
+  shiftVal(newParent: FreqNode): void {
+    //reassign links on prev and next val nodes
+    // if only one node exists then nullify the valList
+    if (!this.prev && !this.next) {
+      if (this.parent) {
+      this.parent.valList.head = null;
+      this.parent.valList.tail = null;
+      }
+    }
+    // check if this is the head but not the only valNode in the valList
+    else if (!this.prev){
+      if (this.parent) {
+        this.parent.valList.head = this.next;
+        if (this.next) {
+        this.next.prev = null;
+        }
+      }
+    }
+    // check if this is the tail but not the only valNode in the valList
+    else if (!this.next) {
+      if (this.parent) {
+      this.parent.valList.tail = this.prev;
+      if (this.prev) {
+        this.prev.next = null;
+      }
+      }
+    }
+    // else represents if this is not the head or tail but a valNode in between the valList
+    else {
+      this.prev.next = this.next;
+      this.next.prev = this.prev;
+    }
+    
+    this.parent = newParent;
+    if (!this.parent.valList.head) {
+      this.parent.valList.head = this;
+      this.parent.valList.tail = this;
+      this.next = null;
+      this.prev = null;
+    }
+    else {
+      // this.parent.valList contains the doubly linked list of the valNodes
+      // add this valNode to the head of the list
+      this.parent.valList.head.prev = this;
+      // 
+      this.next = this.parent.valList.head;
+      // reassign head to be this valNode
+      this.parent.valList.head = this;
+      this.prev = null;
+    }
+  }
 }
 
 export class DoublyLinkedListVal {
@@ -74,20 +126,22 @@ export class DoublyLinkedListVal {
     }
   }
 }
-//create the frequency linked list constructor function with its methods
 
 export class FreqNode {
   next: FreqNode | null;
   prev: FreqNode | null;
   freqValue: number;
-  list: DoublyLinkedListVal;
+  valList: DoublyLinkedListVal;
 
   constructor(freqValue: number) {
     this.next = null;
     this.prev = null;
     this.freqValue = freqValue;
+    this.valList = new DoublyLinkedListVal;
   }
 }
+
+//create the frequency linked list constructor function with its methods
 
 export class DoublyLinkedListFreq {
   head: FreqNode | null;
@@ -98,12 +152,31 @@ export class DoublyLinkedListFreq {
     this.tail = null;
   }
   
-  addFreq(key: string, value: any){
-   
+  // calling this method assuming next FreqNode doesn't exist
+  addFreq(prevNode: FreqNode): FreqNode {
+    //not positive we'll be able to use this same logic for adding to beginning of list
+    
     if(!this.head) {
         this.head = new FreqNode(1);
         this.tail = this.head;
+        return this.head;
     }
-    
+  
+    const val = prevNode.freqValue + 1;
+    const node: FreqNode = new FreqNode(val);
+    node.next = prevNode.next;
+    node.prev = prevNode;
+    prevNode.next = node;
+
+    // if node.next is truthy it means it is not the tail and prev node of its next needs to be reassigned, else reassign tail
+
+    //non-ternary code
+    // if(node.next) node.next.prev = node;
+    // else this.tail = node;
+
+    node.next ? node.next.prev = node : this.tail = node;
+
+    return node;
   }
+
 }

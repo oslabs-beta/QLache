@@ -92,7 +92,7 @@ export class DoublyLinkedListVal {
       this.head = node;
       this.length++;
     }
-    return this.length;
+    return node;
   }
 
   // addFU(key: string, value: any, parent: FreqNode) {
@@ -153,15 +153,23 @@ export class DoublyLinkedListFreq {
   }
   
   // calling this method assuming next FreqNode doesn't exist
-  addFreq(prevNode: FreqNode): FreqNode {
+  addFreq(prevNode?: FreqNode): FreqNode {
     //not positive we'll be able to use this same logic for adding to beginning of list
     
-    if(!this.head) {
-        this.head = new FreqNode(1);
-        this.tail = this.head;
-        return this.head;
+    if (!prevNode){
+      const node = new FreqNode(1);
+      if (!this.head){
+        this.head = node;
+        this.tail = node;
+      }
+      else {
+        this.head.prev = node;
+        node.next = this.head;
+        this.head = node;
+      }
+      return node;
     }
-  
+    
     const val = prevNode.freqValue + 1;
     const node: FreqNode = new FreqNode(val);
     node.next = prevNode.next;

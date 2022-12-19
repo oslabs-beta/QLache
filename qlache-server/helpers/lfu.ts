@@ -27,14 +27,12 @@ export class LFU {
   }
 
   post(key: string, value: any) {
-    if (this.list.head?.freqValue !== 1){
-      this.list.addFreq()
-    } 
-    if (!this.cache.hasOwnProperty(key)) {
-      
+    const valNode: ValNode = new ValNode(key, value);
+    this.cache[key] = valNode;
+    if (this.list.head?.freqValue !== 1 || this.list.head === null){
+      valNode.shiftVal(this.list.addFreq());
+    } else {
+    valNode.shiftVal(this.list.head)
     }
-
-
   }
-
 };

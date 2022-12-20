@@ -20,26 +20,26 @@ export class ValNode {
     // if only one node exists then nullify the valList
     if (!this.prev && !this.next) {
       if (this.parent) {
-      this.parent.valList.head = null;
-      this.parent.valList.tail = null;
+        this.parent.valList.head = null;
+        this.parent.valList.tail = null;
       }
     }
     // check if this is the head but not the only valNode in the valList
-    else if (!this.prev){
+    else if (!this.prev) {
       if (this.parent) {
         this.parent.valList.head = this.next;
         if (this.next) {
-        this.next.prev = null;
+          this.next.prev = null;
         }
       }
     }
     // check if this is the tail but not the only valNode in the valList
     else if (!this.next) {
       if (this.parent) {
-      this.parent.valList.tail = this.prev;
-      if (this.prev) {
-        this.prev.next = null;
-      }
+        this.parent.valList.tail = this.prev;
+        if (this.prev) {
+          this.prev.next = null;
+        }
       }
     }
     // else represents if this is not the head or tail but a valNode in between the valList
@@ -47,19 +47,18 @@ export class ValNode {
       this.prev.next = this.next;
       this.next.prev = this.prev;
     }
-    
+
     this.parent = newParent;
     if (!this.parent.valList.head) {
       this.parent.valList.head = this;
       this.parent.valList.tail = this;
       this.next = null;
       this.prev = null;
-    }
-    else {
+    } else {
       // this.parent.valList contains the doubly linked list of the valNodes
       // add this valNode to the head of the list
       this.parent.valList.head.prev = this;
-      // 
+      //
       this.next = this.parent.valList.head;
       // reassign head to be this valNode
       this.parent.valList.head = this;
@@ -116,6 +115,22 @@ export class DoublyLinkedListVal {
       return deleted;
     }
   }
+  deleteMRU() {
+    if (!this.head || !this.tail) return;
+    else {
+      const deleted = this.head;
+      if (this.head.next) {
+        const updated = this.head.next;
+        this.head.next.prev = null;
+        this.head.next = null;
+        this.head = updated;
+      } else {
+        this.head = null;
+        this.tail = null;
+      }
+      return deleted;
+    }
+  }
   findAndDelete(node: ValNode) {
     if (node.prev) {
       const nextNode = node.next;
@@ -137,7 +152,7 @@ export class FreqNode {
     this.next = null;
     this.prev = null;
     this.freqValue = freqValue;
-    this.valList = new DoublyLinkedListVal;
+    this.valList = new DoublyLinkedListVal();
   }
 }
 
@@ -151,25 +166,24 @@ export class DoublyLinkedListFreq {
     this.head = null;
     this.tail = null;
   }
-  
+
   // calling this method assuming next FreqNode doesn't exist
   addFreq(prevNode?: FreqNode): FreqNode {
     //not positive we'll be able to use this same logic for adding to beginning of list
-    
-    if (!prevNode){
+
+    if (!prevNode) {
       const node = new FreqNode(1);
-      if (!this.head){
+      if (!this.head) {
         this.head = node;
         this.tail = node;
-      }
-      else {
+      } else {
         this.head.prev = node;
         node.next = this.head;
         this.head = node;
       }
       return node;
     }
-    
+
     const val = prevNode.freqValue + 1;
     const node: FreqNode = new FreqNode(val);
     node.next = prevNode.next;
@@ -182,9 +196,8 @@ export class DoublyLinkedListFreq {
     // if(node.next) node.next.prev = node;
     // else this.tail = node;
 
-    node.next ? node.next.prev = node : this.tail = node;
+    node.next ? (node.next.prev = node) : (this.tail = node);
 
     return node;
   }
-
 }

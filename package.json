@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/oslabs-beta/QLache-Package/issues"
   },
-  "homepage": "https://github.com/oslabs-beta/QLache-Package#readme"
+  "homepage": "https://github.com/oslabs-beta/QLache-Package#readme",
+  "dependencies": {
+    "graphql": "^16.6.0"
+  }
 }

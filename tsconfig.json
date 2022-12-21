@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "ES2018",
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "qlache-server/**/*.ts"
+  ]
+}

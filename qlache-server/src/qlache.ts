@@ -1,6 +1,9 @@
 import {LRU} from '../helpers/lru';
 import {LFU} from '../helpers/lfu';
+
 // import {MRU} from '../helpers/mru';
+
+
 
 interface options {
     cache?: string;
@@ -22,15 +25,17 @@ import {
     graphql
   } from 'graphql';
 
-class Qlache {
+export default class Qlache {
     schema: GraphQLSchema;
     evictionPolicy: LRU | LFU;
     capacity: number;
+    apiURL: string
 
-    constructor(schema, type, capacity, ) {
+    constructor(type: string, capacity: number, schema?, apiURL?: string ) {
         this.schema = schema
-        this.evictionPolicy = this.setEvictionPolicy(type)
-        this.capacity = capacity;
+        this.evictionPolicy = this.setEvictionPolicy(type),
+        this.capacity = capacity,
+        this.apiURL = apiURL
     }
 
     query(req, res, next) {
@@ -39,17 +44,34 @@ class Qlache {
         const value: object | undefined = this.evictionPolicy.get(query);
         if (value === undefined){
             //fetch request to GQL - need to have access to schema
-            graphql({schema: this.schema, source: query})
-            .then((response) => {
-                const queryRes: object = response;
-                this.evictionPolicy.post(query, queryRes);
-                res.locals.queryRes = queryRes;
-                return next();
+            if (this.schema) {
+                graphql({schema: this.schema, source: query})
+                .then((response) => {
+                    const queryRes: object = response;
+                    this.evictionPolicy.post(query, queryRes);
+                    res.locals.queryRes = queryRes;
+                    return next();
+                })
+                //design error handling here - needs to integrate with user's existing error handling?
+                // .catch(err => {
+                //     return next()
+                // });
+            }   
+        }
+        if (this.apiURL) {
+            fetch(this.apiURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    query
+                }),
             })
-            //design error handling here - needs to integrate with user's existing error handling?
-            // .catch(err => {
-            //     return next()
-            // });
+            .then((res) => res.json())
+            .then((res) => {
+                this.evictionPolicy.post(query, res);
+                console.log('almost there, got a response from the api, no way we get to this point on try number 1', res);
+                return next();
+            });
         }
         res.locals.queryRes = value;
         return next();

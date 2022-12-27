@@ -1,5 +1,6 @@
 import {LRU} from '../helpers/lru';
 import {LFU} from '../helpers/lfu';
+import {MRU} from '../helpers/mru'
 // import {MRU} from '../helpers/mru';
 
 interface options {
@@ -55,12 +56,14 @@ class Qlache {
         return next();
     }
 
-    setEvictionPolicy(evictionPolicy: string){
+    setEvictionPolicy(evictionPolicy: string): LFU | LRU | MRU {
         switch (evictionPolicy){
             case "LFU":
                 return new LFU(this.capacity);
             case "LRU": 
                 return new LRU(this.capacity);
+            case "MRU": 
+                return new MRU(this.capacity);
             default:
                 return new LRU(this.capacity);
         }

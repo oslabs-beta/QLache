@@ -16,7 +16,7 @@ export class LRU {
     if (this.cache.hasOwnProperty(key)) {
       const value = this.cache[key].value;
       this.list.findAndDelete(this.cache[key]);
-      this.list.add(key, value, null);
+      this.list.add(key, value);
       return value;
     } else return;
   }
@@ -25,7 +25,7 @@ export class LRU {
     if (this.list.length === this.capacity) {
       this.list.delete();
     }
-    const newNode = this.list.add(key, value, null);
+    const newNode = this.list.add(key, value);
     this.cache[key] = newNode;
   }
 }

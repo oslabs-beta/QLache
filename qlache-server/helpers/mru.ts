@@ -14,13 +14,13 @@ export class MRU {
     if (this.cache.hasOwnProperty(key)) {
       const value = this.cache[key].value;
       this.list.findAndDelete(this.cache[key]);
-      this.list.add(key, value, null);
+      this.list.add(key, value);
       return value;
     } else return;
   }
 
   post(key: string, value: any): void {
-    const newNode = this.list.add(key, value, null);
+    const newNode = this.list.add(key, value);
     this.cache[key] = newNode;
     if (this.list.length > this.capacity) {
       this.list.deleteMRU();

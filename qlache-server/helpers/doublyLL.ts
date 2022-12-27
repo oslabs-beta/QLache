@@ -78,14 +78,14 @@ export class DoublyLinkedListVal {
     this.length = 0;
   }
 
-  add(key: string, value: any, parent: FreqNode | null): ValNode {
+  add(key: string, value: any, parent?: FreqNode): ValNode {
     const node: ValNode = new ValNode(key, value);
     if (!this.head) {
       this.head = node;
       this.tail = node;
       this.length++;
     } else {
-      this.head.parent = parent;
+      if (parent) this.head.parent = parent;
       node.next = this.head;
       this.head.prev = node;
       this.head = node;

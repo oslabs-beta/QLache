@@ -13,7 +13,7 @@ export class LFU {
     this.totalValNodes = 0;
   }
 
-  get(key: string): undefined | number {
+  get(key: string): object | undefined {
     // check if it exists in cache
     if (this.cache.hasOwnProperty(key)) {
       const valNode = this.cache[key]
@@ -28,7 +28,7 @@ export class LFU {
     } else return;
   }
 
-  post(key: string, value: any) {
+  post(key: string, value: any): void {
     if (this.totalValNodes === this.capacity){
       this.list.head?.valList.delete();
       this.totalValNodes--;
@@ -38,7 +38,7 @@ export class LFU {
     if (this.list.head?.freqValue !== 1 || this.list.head === null){
       valNode.shiftVal(this.list.addFreq());
     } else {
-    valNode.shiftVal(this.list.head)
+      valNode.shiftVal(this.list.head)
     }
     this.totalValNodes++;
   }

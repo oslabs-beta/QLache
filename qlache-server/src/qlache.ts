@@ -29,7 +29,7 @@ class Qlache {
     evictionPolicy: LRU | LFU;
     capacity: number;
 
-    constructor(schema, type: , capacity, ) {
+    constructor(schema: GraphQLSchema, type: string , capacity: number, ) {
         this.schema = schema
         this.evictionPolicy = this.setEvictionPolicy(type)
         this.capacity = capacity;

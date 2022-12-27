@@ -78,7 +78,7 @@ export class DoublyLinkedListVal {
     this.length = 0;
   }
 
-  add(key: string, value: any, parent: FreqNode | null) {
+  add(key: string, value: any, parent: FreqNode | null): ValNode {
     const node: ValNode = new ValNode(key, value);
     if (!this.head) {
       this.head = node;
@@ -94,7 +94,7 @@ export class DoublyLinkedListVal {
     return node;
   }
 
-  delete() {
+  delete(): ValNode | undefined {
     if (!this.head || !this.tail) return;
     else {
       const deleted = this.tail;
@@ -103,7 +103,7 @@ export class DoublyLinkedListVal {
       return deleted;
     }
   }
-  deleteMRU() {
+  deleteMRU(): ValNode | undefined {
     if (!this.head || !this.tail) return;
     else {
       const deleted = this.head;
@@ -119,7 +119,7 @@ export class DoublyLinkedListVal {
       return deleted;
     }
   }
-  findAndDelete(node: ValNode) {
+  findAndDelete(node: ValNode): void {
     if (node.prev) {
       const nextNode = node.next;
       node.prev.next = nextNode;

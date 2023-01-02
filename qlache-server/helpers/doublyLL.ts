@@ -4,7 +4,7 @@ export class ValNode {
   next: ValNode | null;
   prev: ValNode | null;
   parent: FreqNode | null;
-  value: any;
+  value: object;
   key: string;
 
   constructor(key: string, value: any) {
@@ -78,7 +78,7 @@ export class DoublyLinkedListVal {
     this.length = 0;
   }
 
-  add(key: string, value: any, parent?: FreqNode): ValNode {
+  add(key: string, value: object, parent?: FreqNode): ValNode {
     const node: ValNode = new ValNode(key, value);
     if (!this.head) {
       this.head = node;

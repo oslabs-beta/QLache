@@ -23,7 +23,7 @@ export class LRU {
 
   post(key: string, value: any): void {
     if (this.list.length === this.capacity) {
-      this.list.delete();
+      this.list.deleteFromTail();
     }
     const newNode = this.list.add(key, value);
     this.cache[key] = newNode;

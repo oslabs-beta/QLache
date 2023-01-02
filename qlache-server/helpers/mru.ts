@@ -23,7 +23,7 @@ export class MRU {
     const newNode = this.list.add(key, value);
     this.cache[key] = newNode;
     if (this.list.length > this.capacity) {
-      this.list.deleteMRU();
+      this.list.deleteFromHead();
     }
   }
 }

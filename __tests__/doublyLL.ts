@@ -69,7 +69,7 @@ describe('DoublyLinkedListVal methods test', () => {
   });
 
   it('Should remove valNode from the tail of the ValLL', () => {
-    const deletedNode = valLL.delete();
+    const deletedNode = valLL.deleteFromTail();
     expect(deletedNode.key).toEqual('queryKey1');
     expect(deletedNode.value).toEqual({data: { name: 'a'} });
     expect(valLL.tail.key).toEqual('queryKey2');
@@ -77,7 +77,7 @@ describe('DoublyLinkedListVal methods test', () => {
   });
 
   it('Should remove valNode from the head of the valLL', () => {
-    const deletedNode = valLL.deleteMRU();
+    const deletedNode = valLL.deleteFromHead();
     expect(deletedNode.key).toEqual('queryKey4');
     expect(deletedNode.value).toEqual({data: { name: 'd'} });
     expect(valLL.head.key).toEqual('queryKey3');
@@ -96,7 +96,7 @@ describe('DoublyLinkedListVal methods test', () => {
     // expect(valLL.head.key).toEqual('queryKey2');
     // expect(valLL.head.next.key).toEqual('queryKey1');
 
-    
+
     valLL.findAndDelete(valLL.head.next.next.next);
 
     expect(valLL.head.next.key).toEqual('queryKey2');

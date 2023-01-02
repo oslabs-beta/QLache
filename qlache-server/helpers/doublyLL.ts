@@ -94,7 +94,7 @@ export class DoublyLinkedListVal {
     return node;
   }
 
-  delete(): ValNode | undefined {
+  deleteFromTail(): ValNode | undefined {
     if (!this.head || !this.tail) return;
     else {
       const deleted = this.tail;
@@ -103,7 +103,7 @@ export class DoublyLinkedListVal {
       return deleted;
     }
   }
-  deleteMRU(): ValNode | undefined {
+  deleteFromHead(): ValNode | undefined {
     if (!this.head || !this.tail) return;
     else {
       const deleted = this.head;

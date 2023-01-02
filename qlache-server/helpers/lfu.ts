@@ -30,7 +30,7 @@ export class LFU {
 
   post(key: string, value: any): void {
     if (this.totalValNodes === this.capacity){
-      this.list.head?.valList.delete();
+      this.list.head?.valList.deleteFromTail();
       this.totalValNodes--;
     }
     const valNode: ValNode = new ValNode(key, value);

@@ -19,10 +19,10 @@ export class LFU {
       const valNode = this.cache[key]
       const freqNode = valNode.parent;
       if (freqNode.next.freqValue === freqNode.freqValue + 1) {
-        valNode.shiftVal(freqNode.next);
+        valNode.shiftVal(freqNode.next, this.list);
       } else {
         const newParent = this.list.addFreq(freqNode);
-        valNode.shiftVal(newParent);
+        valNode.shiftVal(newParent, this.list);
       }
       return valNode.value; // refactor choose val or value and stay consistent
     } else return;
@@ -36,9 +36,9 @@ export class LFU {
     const valNode: ValNode = new ValNode(key, value);
     this.cache[key] = valNode;
     if (this.list.head?.freqValue !== 1 || this.list.head === null){
-      valNode.shiftVal(this.list.addFreq());
+      valNode.shiftVal(this.list.addFreq(), this.list);
     } else {
-      valNode.shiftVal(this.list.head)
+      valNode.shiftVal(this.list.head, this.list)
     }
     this.totalValNodes++;
   }

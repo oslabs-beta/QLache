@@ -1,6 +1,8 @@
-import {LRU} from '../helpers/lru';
-import {LFU} from '../helpers/lfu';
-// import {MRU} from '../helpers/mru';
+import { LRU } from '../helpers/lru';
+import { LFU } from '../helpers/lfu';
+import { MRU } from '../helpers/mru'
+import { Request, Response, NextFunction } from 'express';
+
 
 interface options {
     cache?: string;
@@ -27,13 +29,13 @@ class Qlache {
     evictionPolicy: LRU | LFU;
     capacity: number;
 
-    constructor(schema, type, capacity, ) {
+    constructor(schema: GraphQLSchema, type: string , capacity: number, ) {
         this.schema = schema
         this.evictionPolicy = this.setEvictionPolicy(type)
         this.capacity = capacity;
     }
 
-    query(req, res, next) {
+    query(req: Request, res: Response, next: NextFunction): void {
         const query = req.body.query;
         // check if cache contains the key 
         const value: object | undefined = this.evictionPolicy.get(query);
@@ -55,12 +57,14 @@ class Qlache {
         return next();
     }
 
-    setEvictionPolicy(evictionPolicy: string){
+    setEvictionPolicy(evictionPolicy: string): LFU | LRU | MRU {
         switch (evictionPolicy){
             case "LFU":
                 return new LFU(this.capacity);
             case "LRU": 
                 return new LRU(this.capacity);
+            case "MRU": 
+                return new MRU(this.capacity);
             default:
                 return new LRU(this.capacity);
         }

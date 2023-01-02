@@ -4,7 +4,7 @@ export class ValNode {
   next: ValNode | null;
   prev: ValNode | null;
   parent: FreqNode | null;
-  value: any;
+  value: object;
   key: string;
 
   constructor(key: string, value: any) {
@@ -78,14 +78,14 @@ export class DoublyLinkedListVal {
     this.length = 0;
   }
 
-  add(key: string, value: any, parent: FreqNode | null) {
+  add(key: string, value: object, parent?: FreqNode): ValNode {
     const node: ValNode = new ValNode(key, value);
     if (!this.head) {
       this.head = node;
       this.tail = node;
       this.length++;
     } else {
-      this.head.parent = parent;
+      if (parent) this.head.parent = parent;
       node.next = this.head;
       this.head.prev = node;
       this.head = node;
@@ -94,7 +94,7 @@ export class DoublyLinkedListVal {
     return node;
   }
 
-  delete() {
+  deleteFromTail(): ValNode | undefined {
     if (!this.head || !this.tail) return;
     else {
       const deleted = this.tail;
@@ -103,7 +103,7 @@ export class DoublyLinkedListVal {
       return deleted;
     }
   }
-  deleteMRU() {
+  deleteFromHead(): ValNode | undefined {
     if (!this.head || !this.tail) return;
     else {
       const deleted = this.head;
@@ -119,7 +119,7 @@ export class DoublyLinkedListVal {
       return deleted;
     }
   }
-  findAndDelete(node: ValNode) {
+  findAndDelete(node: ValNode): void {
     if (node.prev) {
       const nextNode = node.next;
       node.prev.next = nextNode;

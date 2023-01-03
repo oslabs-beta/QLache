@@ -76,11 +76,22 @@ describe('DoublyLinkedListVal methods test', () => {
   });
 
   it('Should remove valNode from the tail of the ValLL', () => {
-    const deletedNode = valLL.deleteFromTail();
+    let deletedNode = valLL.deleteFromTail();
     expect(deletedNode.key).toEqual('queryKey1');
     expect(deletedNode.value).toEqual({data: { name: 'a'} });
     expect(valLL.tail.key).toEqual('queryKey2');
 
+    valLL.deleteFromTail();
+    valLL.deleteFromTail();
+    deletedNode = valLL.deleteFromTail();
+    expect(deletedNode.key).toEqual('queryKey4');
+    expect(deletedNode.value).toEqual({data: { name: 'd'} });
+    expect(valLL.tail).toBeNull();
+    expect(valLL.head).toBeNull();
+
+    valLL.add('queryKey2', {data: { name: 'b'} });
+    valLL.add('queryKey3', {data: { name: 'c'} });
+    valLL.add('queryKey4', {data: { name: 'd'} });
   });
 
   it('Should remove valNode from the head of the valLL', () => {
@@ -122,9 +133,6 @@ describe('valLL and freqLL combined testing', () => {
   it('should add val node to passed in freq node', () => {
     const val1 = freq1.valList.add('key1', {data: { name: 'A'} }, freq1);
     expect(freq1.valList.head).toBe(val1);
-    // expect(freq1.valList.head.next).toBe(val1);
-    // expect(freq2.valList.head).toBe(val4);
-    // expect(freq2.valList.head.next).toBe(val3);
   });
 
   it('should move val node to specified freq and remove from previous frequency', () => {
@@ -132,7 +140,7 @@ describe('valLL and freqLL combined testing', () => {
     const val3 = freq2.valList.add('key3', {data: { name: 'C'} }, freq2);
     const val4 = freq2.valList.add('key4', {data: { name: 'D'} }, freq2);
     val2.shiftVal(freq2, freqLL);
-    console.log(freq1.valList);
+    
     expect(freq2.valList.head).toBe(val2);
     expect(freq2.valList.head.next).toBe(val4);
     expect(freq1.valList.head.next).toBeNull();

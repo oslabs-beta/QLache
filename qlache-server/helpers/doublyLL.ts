@@ -88,13 +88,20 @@ export class DoublyLinkedListVal {
       this.length++;
     }
     if (parent) this.head.parent = parent;
+    console.log('im length after adding', this.length, key);
     return node;
   }
 
   deleteFromTail(): ValNode | undefined {
     if (!this.head || !this.tail) return;
     else {
+      this.length--;
       const deleted = this.tail;
+      if (this.head.next === null) {
+        this.head = null;
+        this.tail = null;
+        return deleted;
+      }
       this.tail = deleted.prev;
       if (this.tail) this.tail.next = null;
       return deleted;
@@ -103,6 +110,7 @@ export class DoublyLinkedListVal {
   deleteFromHead(): ValNode | undefined {
     if (!this.head || !this.tail) return;
     else {
+      this.length--;
       const deleted = this.head;
       if (this.head.next) {
         const updated = this.head.next;

@@ -18,7 +18,7 @@ export class LFU {
     if (this.cache.hasOwnProperty(key)) {
       const valNode = this.cache[key]
       const freqNode = valNode.parent;
-      if (freqNode.next.freqValue === freqNode.freqValue + 1) {
+      if (freqNode.next && freqNode.next.freqValue === freqNode.freqValue + 1) {
         valNode.shiftVal(freqNode.next, this.list);
       } else {
         const newParent = this.list.addFreq(freqNode);
@@ -28,15 +28,20 @@ export class LFU {
     } else return;
   }
 
-  post(key: string, value: any): void {
+  post(key: string, value: object): void {
     if (this.totalValNodes === this.capacity){
-      this.list.head?.valList.deleteFromTail();
+      const deletedVal = this.list.head?.valList.deleteFromTail();
+      
+      if (deletedVal) delete this.cache[deletedVal.key];
+      if (!this.list.head?.valList.head && deletedVal?.parent) this.list.deleteFreq(deletedVal.parent);
       this.totalValNodes--;
     }
     const valNode: ValNode = new ValNode(key, value);
     this.cache[key] = valNode;
     if (this.list.head?.freqValue !== 1 || this.list.head === null){
+      
       valNode.shiftVal(this.list.addFreq(), this.list);
+      
     } else {
       valNode.shiftVal(this.list.head, this.list)
     }

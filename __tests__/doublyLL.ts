@@ -67,12 +67,14 @@ describe('DoublyLinkedListVal methods test', () => {
     b.prev = c;
     valLL.head = c;
     valLL.tail = a;
+    valLL.length = 3;
 
   });
   it('Should add ValNode to the head of ValLL with no FreqNode passed in', () => {
     const newNode = valLL.add('queryKey4', {data: { name: 'd'} });
     expect(valLL.head).toBe(newNode);
     expect(valLL.head.next.key).toEqual('queryKey3');
+    expect(valLL.length).toEqual(4);
   });
 
   it('Should remove valNode from the tail of the ValLL', () => {
@@ -80,6 +82,7 @@ describe('DoublyLinkedListVal methods test', () => {
     expect(deletedNode.key).toEqual('queryKey1');
     expect(deletedNode.value).toEqual({data: { name: 'a'} });
     expect(valLL.tail.key).toEqual('queryKey2');
+    expect(valLL.length).toEqual(3);
 
     valLL.deleteFromTail();
     valLL.deleteFromTail();
@@ -88,17 +91,34 @@ describe('DoublyLinkedListVal methods test', () => {
     expect(deletedNode.value).toEqual({data: { name: 'd'} });
     expect(valLL.tail).toBeNull();
     expect(valLL.head).toBeNull();
+    expect(valLL.length).toEqual(0);
+
+  });
+
+  it('Should remove valNode from the head of the valLL', () => {
+    valLL.add('queryKey1', {data: { name: 'a'} });
+    const node1 = valLL.deleteFromHead();
+    expect(node1.key).toEqual('queryKey1');
+    expect(node1.value).toEqual({data: { name: 'a'} });
+    expect(valLL.head).toBeNull();
+    expect(valLL.length).toEqual(0);
+
+    const node2 = valLL.deleteFromHead();
+    expect(node2).toEqual(undefined);
+    expect(valLL.length).toEqual(0);
+
+
 
     valLL.add('queryKey2', {data: { name: 'b'} });
     valLL.add('queryKey3', {data: { name: 'c'} });
     valLL.add('queryKey4', {data: { name: 'd'} });
-  });
 
-  it('Should remove valNode from the head of the valLL', () => {
     const deletedNode = valLL.deleteFromHead();
     expect(deletedNode.key).toEqual('queryKey4');
     expect(deletedNode.value).toEqual({data: { name: 'd'} });
     expect(valLL.head.key).toEqual('queryKey3');
+    expect(valLL.length).toEqual(2);
+
   });
 
   it('Should remove passed in valNode from the linked list', () => {

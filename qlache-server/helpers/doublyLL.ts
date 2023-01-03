@@ -88,7 +88,7 @@ export class DoublyLinkedListVal {
       this.length++;
     }
     if (parent) this.head.parent = parent;
-    console.log('im length after adding', this.length, key);
+    //console.log('im length after adding', this.length, key);
     return node;
   }
 

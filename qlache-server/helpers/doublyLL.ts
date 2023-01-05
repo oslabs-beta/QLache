@@ -15,14 +15,11 @@ export class ValNode {
     this.key = key;
   }
 
-  shiftVal(newParent: FreqNode): void {
+  shiftVal(newParent: FreqNode, freqLL: DoublyLinkedListFreq): void {
     //reassign links on prev and next val nodes
     // if only one node exists then nullify the valList
-    if (!this.prev && !this.next) {
-      if (this.parent) {
-        this.parent.valList.head = null;
-        this.parent.valList.tail = null;
-      }
+    if (!this.prev && !this.next && this.parent) {
+      freqLL.deleteFreq(this.parent);
     }
     // check if this is the head but not the only valNode in the valList
     else if (!this.prev) {
@@ -85,19 +82,26 @@ export class DoublyLinkedListVal {
       this.tail = node;
       this.length++;
     } else {
-      if (parent) this.head.parent = parent;
       node.next = this.head;
       this.head.prev = node;
       this.head = node;
       this.length++;
     }
+    if (parent) this.head.parent = parent;
+    //console.log('im length after adding', this.length, key);
     return node;
   }
 
   deleteFromTail(): ValNode | undefined {
     if (!this.head || !this.tail) return;
     else {
+      this.length--;
       const deleted = this.tail;
+      if (this.head.next === null) {
+        this.head = null;
+        this.tail = null;
+        return deleted;
+      }
       this.tail = deleted.prev;
       if (this.tail) this.tail.next = null;
       return deleted;
@@ -106,6 +110,7 @@ export class DoublyLinkedListVal {
   deleteFromHead(): ValNode | undefined {
     if (!this.head || !this.tail) return;
     else {
+      this.length--;
       const deleted = this.head;
       if (this.head.next) {
         const updated = this.head.next;
@@ -120,13 +125,17 @@ export class DoublyLinkedListVal {
     }
   }
   findAndDelete(node: ValNode): void {
+    if (!node.next) {
+      this.deleteFromTail();
+      return;
+    }
     if (node.prev) {
       const nextNode = node.next;
       node.prev.next = nextNode;
       if (nextNode) {
         nextNode.prev = node.prev;
       }
-    }
+    } else this.deleteFromHead();
   }
 }
 
@@ -187,5 +196,26 @@ export class DoublyLinkedListFreq {
     node.next ? (node.next.prev = node) : (this.tail = node);
 
     return node;
+  }
+
+  deleteFreq(currNode: FreqNode): void {
+    // passed in node is the head and tail
+    if (!currNode.prev && !currNode.next) {
+      this.head = null;
+      this.tail = null;
+    } 
+    // passed in node is the tail
+    else if (!currNode.next && currNode.prev) {
+      this.tail = currNode.prev;
+      this.tail.next = null;
+    }
+    else if (!currNode.prev && currNode.next) {
+      this.head = currNode.next;
+      this.head.prev = null;
+    }
+    else if (currNode.next && currNode.prev) {
+      currNode.prev.next = currNode.next;
+      currNode.next.prev = currNode.prev;
+    }
   }
 }

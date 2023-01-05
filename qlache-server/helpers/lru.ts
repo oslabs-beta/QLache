@@ -2,7 +2,7 @@ import { DoublyLinkedListVal } from "./doublyLL";
 
 export class LRU {
   list: DoublyLinkedListVal;
-  cache: any;
+  cache: object;
   capacity: number;
 
   constructor(capacity: number) {
@@ -16,14 +16,17 @@ export class LRU {
     if (this.cache.hasOwnProperty(key)) {
       const value = this.cache[key].value;
       this.list.findAndDelete(this.cache[key]);
-      this.list.add(key, value);
+      this.cache[key] = this.list.add(key, value);
+      
       return value;
     } else return;
   }
 
   post(key: string, value: any): void {
     if (this.list.length === this.capacity) {
-      this.list.deleteFromTail();
+      const deletedVal = this.list.deleteFromTail();
+      //console.log(Object.keys(this.cache));
+      if (deletedVal) delete this.cache[deletedVal.key];
     }
     const newNode = this.list.add(key, value);
     this.cache[key] = newNode;

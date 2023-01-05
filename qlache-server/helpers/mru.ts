@@ -14,7 +14,7 @@ export class MRU {
     if (this.cache.hasOwnProperty(key)) {
       const value = this.cache[key].value;
       this.list.findAndDelete(this.cache[key]);
-      this.list.add(key, value);
+      this.cache[key] = this.list.add(key, value);
       return value;
     } else return;
   }
@@ -23,7 +23,9 @@ export class MRU {
     const newNode = this.list.add(key, value);
     this.cache[key] = newNode;
     if (this.list.length > this.capacity) {
-      this.list.deleteFromHead();
+
+      const deletedVal = this.list.deleteFromHead();
+      if (deletedVal) delete this.cache[deletedVal.key];
     }
   }
 }

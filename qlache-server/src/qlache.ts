@@ -1,7 +1,7 @@
 import {LRU} from '../helpers/lru.js';
 import {LFU} from '../helpers/lfu.js';
 import {MRU} from '../helpers/mru';
-import { parse, print } from 'graphql/language/parser.js';
+import { parse, print } from 'graphql/language';
 
 interface options {
     cache?: string;

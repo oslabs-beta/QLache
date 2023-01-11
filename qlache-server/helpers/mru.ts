@@ -2,7 +2,7 @@ import { DoublyLinkedListVal } from "./doublyLL";
 
 export class MRU {
   list: DoublyLinkedListVal;
-  cache: any;
+  cache: object;
   capacity: number;
   constructor(capacity: number) {
     this.list = new DoublyLinkedListVal();
@@ -10,20 +10,21 @@ export class MRU {
     this.cache = {};
   }
   // returns the value if it exists or undefined and depending on which return, call other methods
-  get(key: string) {
+  get(key: string): object | undefined {
     if (this.cache.hasOwnProperty(key)) {
       const value = this.cache[key].value;
       this.list.findAndDelete(this.cache[key]);
-      this.list.add(key, value, null);
+      this.cache[key] = this.list.add(key, value);
       return value;
-    } else return undefined;
+    } else return;
   }
 
-  post(key: string, value: any) {
-    const newNode = this.list.add(key, value, null);
+  post(key: string, value: object): void {
+    const newNode = this.list.add(key, value);
     this.cache[key] = newNode;
     if (this.list.length > this.capacity) {
-      this.list.deleteMRU();
+      const deletedVal = this.list.deleteFromHead();
+      if (deletedVal) delete this.cache[deletedVal.key];
     }
   }
 }

@@ -2,7 +2,7 @@ import { DoublyLinkedListVal, DoublyLinkedListFreq, ValNode } from "./doublyLL";
 
 export class LFU {
   list: DoublyLinkedListFreq;
-  cache: any;
+  cache: object;
   capacity: number;
   totalValNodes: number;
 
@@ -13,32 +13,37 @@ export class LFU {
     this.totalValNodes = 0;
   }
 
-  get(key: string): undefined | number {
+  get(key: string): object | undefined {
     // check if it exists in cache
     if (this.cache.hasOwnProperty(key)) {
       const valNode = this.cache[key]
       const freqNode = valNode.parent;
-      if (freqNode.next.freqValue === freqNode.freqValue + 1) {
-        valNode.shiftVal(freqNode.next);
+      if (freqNode.next && freqNode.next.freqValue === freqNode.freqValue + 1) {
+        valNode.shiftVal(freqNode.next, this.list);
       } else {
         const newParent = this.list.addFreq(freqNode);
-        valNode.shiftVal(newParent);
+        valNode.shiftVal(newParent, this.list);
       }
       return valNode.value; // refactor choose val or value and stay consistent
     } else return;
   }
 
-  post(key: string, value: any) {
+  post(key: string, value: object): void {
     if (this.totalValNodes === this.capacity){
-      this.list.head?.valList.delete();
+      const deletedVal = this.list.head?.valList.deleteFromTail();
+      
+      if (deletedVal) delete this.cache[deletedVal.key];
+      if (!this.list.head?.valList.head && deletedVal?.parent) this.list.deleteFreq(deletedVal.parent);
       this.totalValNodes--;
     }
     const valNode: ValNode = new ValNode(key, value);
     this.cache[key] = valNode;
     if (this.list.head?.freqValue !== 1 || this.list.head === null){
-      valNode.shiftVal(this.list.addFreq());
+      
+      valNode.shiftVal(this.list.addFreq(), this.list);
+      
     } else {
-    valNode.shiftVal(this.list.head)
+      valNode.shiftVal(this.list.head, this.list)
     }
     this.totalValNodes++;
   }

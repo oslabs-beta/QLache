@@ -22,7 +22,7 @@ export class LRU {
     } else return;
   }
 
-  post(key: string, value: any): void {
+  post(key: string, value: object): void {
     if (this.list.length === this.capacity) {
       const deletedVal = this.list.deleteFromTail();
       //console.log(Object.keys(this.cache));

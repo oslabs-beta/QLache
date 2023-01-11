@@ -1,8 +1,7 @@
-import { LRU } from '../helpers/lru';
-import { LFU } from '../helpers/lfu';
-import { MRU } from '../helpers/mru'
-import { Request, Response, NextFunction } from 'express';
-
+import {LRU} from '../helpers/lru.js';
+import {LFU} from '../helpers/lfu.js';
+import {MRU} from '../helpers/mru';
+// import { parse } from 'graphql/language/parser.js';
 
 interface options {
     cache?: string;
@@ -13,57 +12,72 @@ interface options {
     capacity?: number;
   }
 
-import {
-    GraphQLSchema,
-    GraphQLObjectType,
-    GraphQLID,
-    GraphQLInt,
-    GraphQLString,
-    GraphQLList,
-    GraphQLNonNull,
-    graphql
-  } from 'graphql';
-
 class Qlache {
-    schema: GraphQLSchema;
-    evictionPolicy: LRU | LFU;
+    apiURL: string;
+    evictionPolicy: LRU | LFU | MRU;
     capacity: number;
 
-    constructor(schema: GraphQLSchema, type: string , capacity: number, ) {
-        this.schema = schema
-        this.evictionPolicy = this.setEvictionPolicy(type)
+    constructor(apiURL, type, capacity) {
+        this.apiURL = apiURL;
+        this.evictionPolicy = this.setEvictionPolicy(type);
         this.capacity = capacity;
+        this.query = this.query.bind(this);
     }
 
-    query(req: Request, res: Response, next: NextFunction): void {
+    query(req, res, next) {
+        console.log('in qlache query middleware')
         const query = req.body.query;
+        // console.log('parsed query', parse(query));
         // check if cache contains the key 
         const value: object | undefined = this.evictionPolicy.get(query);
         if (value === undefined){
+            console.log('cache miss, making request to api');
             //fetch request to GQL - need to have access to schema
-            graphql({schema: this.schema, source: query})
-            .then((response) => {
-                const queryRes: object = response;
-                this.evictionPolicy.post(query, queryRes);
-                res.locals.queryRes = queryRes;
-                return next();
+
+            // graphql({schema: this.schema, source: query})
+            // .then((response) => {
+            //     const queryRes: object = response;
+            //     this.evictionPolicy.post(query, queryRes);
+            //     res.locals.queryRes = queryRes;
+            //     return next();
+            // })
+
+            fetch(this.apiURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    query
+                }),
             })
+            .then((response) => response.json())
+            .then((data) => {
+                this.evictionPolicy.post(query, data);
+                // console.log(res);
+                const queryResponse: object = data;
+                res.locals.queryRes = queryResponse;
+                console.log('this is res.locals', res.locals.queryRes);
+                console.log('this should be the same as above', this.evictionPolicy.cache[query].value);
+                return next();
+                // console.log('almost there, got a response from the api, no way we get to this point on try number 1', res)
+            });
+
             //design error handling here - needs to integrate with user's existing error handling?
             // .catch(err => {
-            //     return next()
             // });
+        } else {
+            res.locals.queryRes = value;
+            return next();
         }
-        res.locals.queryRes = value;
-        return next();
     }
 
-    setEvictionPolicy(evictionPolicy: string): LFU | LRU | MRU {
+    setEvictionPolicy(evictionPolicy: string){
+        console.log('about to enter switch statement');
         switch (evictionPolicy){
             case "LFU":
                 return new LFU(this.capacity);
             case "LRU": 
                 return new LRU(this.capacity);
-            case "MRU": 
+            case "MRU":
                 return new MRU(this.capacity);
             default:
                 return new LRU(this.capacity);
@@ -71,6 +85,7 @@ class Qlache {
     }
 }
 
+export default Qlache;
 /* theoretical use case
 
 user will instantiate QLache, passing in desired options

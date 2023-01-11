@@ -2,7 +2,7 @@ import { DoublyLinkedListVal, DoublyLinkedListFreq, ValNode } from "./doublyLL";
 
 export class LFU {
   list: DoublyLinkedListFreq;
-  cache: any;
+  cache: object;
   capacity: number;
   totalValNodes: number;
 

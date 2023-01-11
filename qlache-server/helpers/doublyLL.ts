@@ -7,7 +7,7 @@ export class ValNode {
   value: object;
   key: string;
 
-  constructor(key: string, value: any) {
+  constructor(key: string, value: object) {
     this.next = null;
     this.prev = null;
     this.parent = null;

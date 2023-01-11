@@ -1,7 +1,7 @@
 import {LRU} from '../helpers/lru.js';
 import {LFU} from '../helpers/lfu.js';
 import {MRU} from '../helpers/mru';
-// import { parse } from 'graphql/language/parser.js';
+import { parse, print } from 'graphql/language/parser.js';
 
 interface options {
     cache?: string;
@@ -26,8 +26,9 @@ class Qlache {
 
     query(req, res, next) {
         console.log('in qlache query middleware')
-        const query = req.body.query;
-        // console.log('parsed query', parse(query));
+        const document = parse(req.body.query);
+        const query: string = print(document);
+    
         // check if cache contains the key 
         const value: object | undefined = this.evictionPolicy.get(query);
         if (value === undefined){

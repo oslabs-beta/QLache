@@ -9,7 +9,6 @@ export class MRU {
     this.capacity = capacity;
     this.cache = {};
   }
-  // returns the value if it exists or undefined and depending on which return, call other methods
   get(key: string): object | undefined {
     if (this.cache.hasOwnProperty(key)) {
       const value = this.cache[key].value;

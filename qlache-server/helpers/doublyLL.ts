@@ -57,7 +57,6 @@ export class ValNode {
       this.parent.valList.head.prev = this;
       //
       this.next = this.parent.valList.head;
-      // reassign head to be this valNode
       this.parent.valList.head = this;
       this.prev = null;
     }
@@ -88,7 +87,6 @@ export class DoublyLinkedListVal {
       this.length++;
     }
     if (parent) this.head.parent = parent;
-    //console.log('im length after adding', this.length, key);
     return node;
   }
 
@@ -166,8 +164,6 @@ export class DoublyLinkedListFreq {
 
   // calling this method assuming next FreqNode doesn't exist
   addFreq(prevNode?: FreqNode): FreqNode {
-    //not positive we'll be able to use this same logic for adding to beginning of list
-
     if (!prevNode) {
       const node = new FreqNode(1);
       if (!this.head) {
@@ -203,17 +199,15 @@ export class DoublyLinkedListFreq {
     if (!currNode.prev && !currNode.next) {
       this.head = null;
       this.tail = null;
-    } 
+    }
     // passed in node is the tail
     else if (!currNode.next && currNode.prev) {
       this.tail = currNode.prev;
       this.tail.next = null;
-    }
-    else if (!currNode.prev && currNode.next) {
+    } else if (!currNode.prev && currNode.next) {
       this.head = currNode.next;
       this.head.prev = null;
-    }
-    else if (currNode.next && currNode.prev) {
+    } else if (currNode.next && currNode.prev) {
       currNode.prev.next = currNode.next;
       currNode.next.prev = currNode.prev;
     }

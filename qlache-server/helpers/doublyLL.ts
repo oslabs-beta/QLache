@@ -1,5 +1,3 @@
-//create the value linked list constructor function with its methods
-
 export class ValNode {
   next: ValNode | null;
   prev: ValNode | null;
@@ -16,31 +14,23 @@ export class ValNode {
   }
 
   shiftVal(newParent: FreqNode, freqLL: DoublyLinkedListFreq): void {
-    //reassign links on prev and next val nodes
-    // if only one node exists then nullify the valList
     if (!this.prev && !this.next && this.parent) {
       freqLL.deleteFreq(this.parent);
-    }
-    // check if this is the head but not the only valNode in the valList
-    else if (!this.prev) {
+    } else if (!this.prev) {
       if (this.parent) {
         this.parent.valList.head = this.next;
         if (this.next) {
           this.next.prev = null;
         }
       }
-    }
-    // check if this is the tail but not the only valNode in the valList
-    else if (!this.next) {
+    } else if (!this.next) {
       if (this.parent) {
         this.parent.valList.tail = this.prev;
         if (this.prev) {
           this.prev.next = null;
         }
       }
-    }
-    // else represents if this is not the head or tail but a valNode in between the valList
-    else {
+    } else {
       this.prev.next = this.next;
       this.next.prev = this.prev;
     }
@@ -52,10 +42,7 @@ export class ValNode {
       this.next = null;
       this.prev = null;
     } else {
-      // this.parent.valList contains the doubly linked list of the valNodes
-      // add this valNode to the head of the list
       this.parent.valList.head.prev = this;
-      //
       this.next = this.parent.valList.head;
       this.parent.valList.head = this;
       this.prev = null;
@@ -151,8 +138,6 @@ export class FreqNode {
   }
 }
 
-//create the frequency linked list constructor function with its methods
-
 export class DoublyLinkedListFreq {
   head: FreqNode | null;
   tail: FreqNode | null;
@@ -162,7 +147,6 @@ export class DoublyLinkedListFreq {
     this.tail = null;
   }
 
-  // calling this method assuming next FreqNode doesn't exist
   addFreq(prevNode?: FreqNode): FreqNode {
     if (!prevNode) {
       const node = new FreqNode(1);
@@ -182,26 +166,16 @@ export class DoublyLinkedListFreq {
     node.next = prevNode.next;
     node.prev = prevNode;
     prevNode.next = node;
-
-    // if node.next is truthy it means it is not the tail and prev node of its next needs to be reassigned, else reassign tail
-
-    //non-ternary code
-    // if(node.next) node.next.prev = node;
-    // else this.tail = node;
-
     node.next ? (node.next.prev = node) : (this.tail = node);
 
     return node;
   }
 
   deleteFreq(currNode: FreqNode): void {
-    // passed in node is the head and tail
     if (!currNode.prev && !currNode.next) {
       this.head = null;
       this.tail = null;
-    }
-    // passed in node is the tail
-    else if (!currNode.next && currNode.prev) {
+    } else if (!currNode.next && currNode.prev) {
       this.tail = currNode.prev;
       this.tail.next = null;
     } else if (!currNode.prev && currNode.next) {

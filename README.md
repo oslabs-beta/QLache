@@ -6,7 +6,7 @@
 
 # QLache
 
-QLache is a lightweight GraphQL caching library, providing easy expiration policy configuration.
+QLache is a lightweight GraphQL caching library, while providing easy expiration policy configuration.
 
 Accelerated by [OS Labs](https://github.com/open-source-labs) and developed by [Karan Maan](https://github.com/modestmaan), [Tyler Heathcote](https://github.com/tylerheathcote), [Francheska Orellana](https://github.com/frorellana), [Cameron Kelly](https://github.com/Cam-Kelly), and [Firas Khansa](https://github.com/gitfuego).
 

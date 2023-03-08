@@ -32,7 +32,7 @@ QLache is available as a package on npm:
 ## Notes
 
 - More information, including a [demo](https://www.qlache.dev/demo) of our package, is available at `www.qlache.dev`
-- Our website source code is avaiable [here](https://github.com/oslabs-beta/QLache-Demo)
+- Our website source code is available [here](https://github.com/oslabs-beta/QLache-Demo)
 
 ## Contribute to QLache
 
